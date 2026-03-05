@@ -1,9 +1,25 @@
+"""
+Project Planner Application
+Main entry point for the application
+"""
+
+from frontend.cli import ProjectPlannerCLI
 from tables.organization import Organization
 from tables.member import Member
 from tables.task import Task
 from tables.project import Project
 
-def run():
+
+def run_interactive_mode():
+    """Run the interactive CLI"""
+    cli = ProjectPlannerCLI()
+    cli.run()
+
+
+def run_demo():
+    """Run a demo showing how to use the system programmatically"""
+    print("Running demo...")
+    
     org = Organization("TestOrg")
 
     org.add_quality("strukturert")
@@ -20,5 +36,12 @@ def run():
 
     print("Neste task:", project.scheduler.next_task())
 
+
 if __name__ == "__main__":
-    run()
+    import sys
+    
+    if len(sys.argv) > 1 and sys.argv[1] == "demo":
+        run_demo()
+    else:
+        run_interactive_mode()
+
