@@ -25,9 +25,7 @@ def health_check():
 
 
 # Seeding data to have an organization implemented from start. "DemoOrg"
-org = Organization("DemoOrg")
-default_project = Project("Hovedprosjekt")
-org.add_project(default_project)
+org = None
 
 
 # Feature: Create task. Creates API for creating a task in the application
@@ -77,3 +75,62 @@ def api_create_task():
             "dependencies": [d.id for d in task.dependencies]
         }
     }), 201
+
+# Feature: Create Organization
+@app.post("/organization")
+def create_organization():
+    global org 
+    data = request.json
+    name = data.get("name")
+    description = data.get("description", "")
+
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+    
+    org = Organization(name, description)
+    return jsonify({"message": f"Organization '{name}' created"}), 201
+
+@app.get("/organization")
+def get_organization():
+    if org is None:
+        return jsonify({"error": "No organization created yet"}), 404
+    
+    return jsonify({
+        "name": org.name,
+        "description": [org.description],
+        "qualities": [{"name": q.name, "description": q.description} for q in org.qualities],
+        "constraints": [{"name": c.name, "description": c.description} for c in org.constraints],
+        
+    })
+
+@app.post("/organization/qualities")
+def add_quality():
+    if org is None:
+        return jsonify({"error": "Create an organization first"}), 400
+    
+    data = request.json
+    name = data.get("name")
+    description = data.get("description", "")
+
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+    
+    org.add_quality(name, description)
+    return jsonify({"message": f"Quality'{name}' added"}), 201
+
+@app.post("/organization/constraints")
+def add_constraint():
+    if org is None:
+        return jsonify({"error": "Create an organization firs"}), 400
+    
+    data = request.json
+    name = data.get("name")
+    description = data.get("description", "")
+
+    if not name:
+        return jsonify({"error": f"Constraint '{name}' added"}), 400
+    
+    org.add_constraint(name, description)
+    return jsonify({"message": f"Constraint '{name}' added"}), 201
+
+

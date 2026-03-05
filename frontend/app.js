@@ -1,7 +1,8 @@
 // Load tasks when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
-    populateDependenciesDropdown();
+    populateDependenciesDropdown()
+    loadOrganization;
 
     const form = document.getElementById("task-form");
     form.addEventListener("submit", handleCreateTask);
@@ -111,5 +112,93 @@ async function handleCreateTask(event) {
     } else {
         responseBox.textContent = result.error || "Error creating task.";
         responseBox.style.color = "red";
+    }
+}
+
+// create organization and load it
+async function createOrganization() {
+    const name = document.getElementById("org-name").value.trim();
+    const description = document.getElementById("org-description").value.trim();
+    const responseEl = document.getElementById("org-response");
+
+    if (!name) {
+        responseEl.textContent = "Please enter a name.";
+        responseEl.style.color = "red";
+        return;
+    }
+
+    const res = await fetch("/organization", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description })
+    });
+
+    const result = await res.json();
+
+    if (res.status === 201) {
+        responseEl.textContent = `Organization "${name}" created!`;
+        responseEl.style.color = "green";
+        loadOrganization();
+    } else {
+        responseEl.textContent = result.error;
+        responseEl.style.color = "red";
+    }
+}
+
+async function loadOrganization() {
+    const res = await fetch("/organization");
+    if (!res.ok) return;
+
+    const org = await res.json();
+
+    document.getElementById("org-status").innerHTML = `
+        <p><strong>Organization:</strong> ${org.name}</p>
+        <p><strong>Description:</strong> ${org.description || "None"}</p>
+        <p><strong>Qualities:</strong> ${org.qualities.map(q => q.name).join(", ") || "None"}</p>
+        <p><strong>Constraints:</strong> ${org.constraints.map(c => c.name).join(", ") || "None"}</p>
+    `;
+}
+
+async function addQuality() {
+    const name = document.getElementById("quality-name").value.trim();
+    const description = document.getElementById("quality-desc").value.trim();
+
+    if (!name) return alert("Please enter a quality name");
+
+    const res = await fetch("/organization/qualities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description })
+    });
+
+    if (res.ok) {
+        document.getElementById("quality-name").value = "";
+        document.getElementById("quality-desc").value = "";
+        loadOrganization();
+    } else {
+        const result = await res.json();
+        alert(result.error);
+    }
+}
+
+async function addConstraint() {
+    const name = document.getElementById("constraint-name").value.trim();
+    const description = document.getElementById("constraint-desc").value.trim();
+
+    if (!name) return alert("Please enter a constraint name");
+
+    const res = await fetch("/organization/constraints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description })
+    });
+
+    if (res.ok) {
+        document.getElementById("constraint-name").value = "";
+        document.getElementById("constraint-desc").value = "";
+        loadOrganization();
+    } else {
+        const result = await res.json();
+        alert(result.error);
     }
 }

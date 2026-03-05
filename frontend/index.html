@@ -15,6 +15,43 @@
 
     <main>
 
+        <!-- Organization Section -->
+<section id="org-section">
+    <h2>Organization</h2>
+
+    <!-- Create org -->
+    <div>
+        <input type="text" id="org-name" placeholder="Organization name">
+        <input type="text" id="org-desc" placeholder="Description (optional)">
+        <button onclick="createOrganization()">Create Organization</button>
+        <p id="org-response"></p>
+    </div>
+
+    <!-- Current org status -->
+    <div id="org-status"></div>
+
+    <hr>
+
+    <!-- Add Quality -->
+    <div>
+        <h3>Add Quality</h3>
+        <input type="text" id="quality-name" placeholder="e.g. Python">
+        <input type="text" id="quality-desc" placeholder="Description (optional)">
+        <button onclick="addQuality()">Add Quality</button>
+    </div>
+
+    <hr>
+
+    <!-- Add Constraint -->
+    <div>
+        <h3>Add Constraint</h3>
+        <input type="text" id="constraint-name" placeholder="e.g. No weekends">
+        <input type="text" id="constraint-desc" placeholder="Description (optional)">
+        <button onclick="addConstraint()">Add Constraint</button>
+    </div>
+</section>
+
+<hr>
         <!-- Task List Section -->
         <section id="task-list-section">
             <h2>Tasks</h2>
