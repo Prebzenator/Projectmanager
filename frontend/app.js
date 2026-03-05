@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
     populateDependenciesDropdown()
-    loadOrganization;
+    loadOrganization();
 
     const form = document.getElementById("task-form");
     form.addEventListener("submit", handleCreateTask);

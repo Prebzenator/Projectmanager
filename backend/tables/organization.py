@@ -1,13 +1,14 @@
 from .attributes import Attributes
 
 class Organization:
-    def __init__(self, name):
+    def __init__(self, name, description=""):
         self.name = name
+        self.description = description
         self.qualities = []
         self.constraints = []
         self.members = []
         self.projects = []
-
+    
     def add_quality(self, name, description=""):
         self.qualities.append(Attributes(name, description))
 

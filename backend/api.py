@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from backend.tables.organization import Organization
 from backend.tables.project import Project
 from backend.features.create_task import create_task
+from backend.features.create_organization import create_organization, add_quality, add_constraint
 
 # Help the application find the right files (API)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Backend folder
@@ -78,7 +79,7 @@ def api_create_task():
 
 # Feature: Create Organization
 @app.post("/organization")
-def create_organization():
+def api_create_organization():
     global org 
     data = request.json
     name = data.get("name")
@@ -97,14 +98,14 @@ def get_organization():
     
     return jsonify({
         "name": org.name,
-        "description": [org.description],
+        "description": org.description,
         "qualities": [{"name": q.name, "description": q.description} for q in org.qualities],
         "constraints": [{"name": c.name, "description": c.description} for c in org.constraints],
         
     })
 
 @app.post("/organization/qualities")
-def add_quality():
+def api_add_quality():
     if org is None:
         return jsonify({"error": "Create an organization first"}), 400
     
@@ -119,16 +120,16 @@ def add_quality():
     return jsonify({"message": f"Quality'{name}' added"}), 201
 
 @app.post("/organization/constraints")
-def add_constraint():
+def api_add_constraint():
     if org is None:
-        return jsonify({"error": "Create an organization firs"}), 400
+        return jsonify({"error": "Create an organization first"}), 400
     
     data = request.json
     name = data.get("name")
     description = data.get("description", "")
 
     if not name:
-        return jsonify({"error": f"Constraint '{name}' added"}), 400
+        return jsonify({"error": "Name is required"}), 400
     
     org.add_constraint(name, description)
     return jsonify({"message": f"Constraint '{name}' added"}), 201
