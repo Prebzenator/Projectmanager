@@ -15,56 +15,74 @@
 
     <main>
 
-        <!-- Organization Section -->
-<section id="org-section">
-    <h2>Organization</h2>
+        <!-- Create Organization -->
+        <section id="create-organization-section">
+            <h2>Create Organization</h2>
 
-    <!-- Create org -->
-    <div>
-        <input type="text" id="org-name" placeholder="Organization name">
-        <input type="text" id="org-desc" placeholder="Description (optional)">
-        <button onclick="createOrganization()">Create Organization</button>
-        <p id="org-response"></p>
-    </div>
+            <form id="organization-form">
+                <label for="org-name">Name:</label>
+                <input type="text" id="org-name" required>
 
-    <!-- Current org status -->
-    <div id="org-status"></div>
+                <label for="org-description">Description:</label>
+                <input type="text" id="org-description">
 
-    <hr>
+                <button type="submit">Create Organization</button>
+            </form>
 
-    <!-- Add Quality -->
-    <div>
-        <h3>Add Quality</h3>
-        <input type="text" id="quality-name" placeholder="e.g. Python">
-        <input type="text" id="quality-desc" placeholder="Description (optional)">
-        <button onclick="addQuality()">Add Quality</button>
-    </div>
-
-    <hr>
-
-    <!-- Add Constraint -->
-    <div>
-        <h3>Add Constraint</h3>
-        <input type="text" id="constraint-name" placeholder="e.g. No weekends">
-        <input type="text" id="constraint-desc" placeholder="Description (optional)">
-        <button onclick="addConstraint()">Add Constraint</button>
-    </div>
-</section>
-
-<hr>
-        <!-- Task List Section -->
-        <section id="task-list-section">
-            <h2>Tasks</h2>
-            <div id="task-list">
-                <!-- Tasks will be inserted here by app.js -->
-            </div>
+            <p id="org-response"></p>
         </section>
 
         <hr>
 
-        <!-- Create Task Section -->
+        <!-- Add Qualities -->
+        <section id="add-quality-section">
+            <h2>Add Quality</h2>
+
+            <form id="quality-form">
+                <label for="quality-name">Name:</label>
+                <input type="text" id="quality-name" required>
+
+                <label for="quality-description">Description:</label>
+                <input type="text" id="quality-description">
+
+                <button type="submit">Add Quality</button>
+            </form>
+
+            <p id="quality-response"></p>
+        </section>
+
+        <hr>
+
+        <!-- Add Constraints -->
+        <section id="add-constraint-section">
+            <h2>Add Constraint</h2>
+
+            <form id="constraint-form">
+                <label for="constraint-name">Name:</label>
+                <input type="text" id="constraint-name" required>
+
+                <label for="constraint-description">Description:</label>
+                <input type="text" id="constraint-description">
+
+                <button type="submit">Add Constraint</button>
+            </form>
+
+            <p id="constraint-response"></p>
+        </section>
+
+        <hr>
+
+        <!-- Task List -->
+        <section id="task-list-section">
+            <h2>Tasks</h2>
+            <div id="task-list"></div>
+        </section>
+
+        <hr>
+
+        <!-- Create Task -->
         <section id="create-task-section">
-            <h2>Create New Task</h2>
+            <h2>Create Task</h2>
 
             <form id="task-form">
 
@@ -81,14 +99,12 @@
                 <input type="number" id="task-priority" min="1" max="5" value="1" required>
 
                 <label for="task-dependencies">Dependencies (optional):</label>
-                <select id="task-dependencies" multiple>
-                    <!-- Options will be added dynamically -->
-                </select>
+                <select id="task-dependencies" multiple></select>
 
                 <button type="submit">Create Task</button>
             </form>
 
-            <p id="response"></p>
+            <p id="task-response"></p>
         </section>
 
     </main>

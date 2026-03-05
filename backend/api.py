@@ -3,6 +3,11 @@ from flask import Flask, request, jsonify, send_from_directory
 from backend.tables.organization import Organization
 from backend.tables.project import Project
 from backend.features.create_task import create_task
+from backend.features.create_organization import (
+    create_organization,
+    add_quality_to_org,
+    add_constraint_to_org
+)
 
 # Help the application find the right files (API)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Backend folder
@@ -24,13 +29,24 @@ def health_check():
     return {"status": "ok"}
 
 
-# Seeding data to have an organization implemented from start. "DemoOrg"
+# Seeding data to have an organization implemented from start.
 org = None
+default_project = None
 
 
 # Feature: Create task. Creates API for creating a task in the application
 @app.post("/tasks")
 def api_create_task():
+    global default_project
+
+    if org is None:
+        return jsonify({"error": "Create an organization first"}), 400
+
+    # Create default project only once
+    if default_project is None:
+        default_project = Project("Hovedprosjekt")
+        org.add_project(default_project)
+
     data = request.json
 
     name = data.get("name")
@@ -66,45 +82,36 @@ def api_create_task():
     # Build response
     return jsonify({
         "message": "Task created",
-        "task": {
-            "id": task.id,
-            "name": task.name,
-            "hours": task.hours,
-            "deadline": task.deadline,
-            "priority": priority,
-            "dependencies": [d.id for d in task.dependencies]
-        }
+        "task": task.to_dict()
     }), 201
+
 
 # Feature: Create Organization
 @app.post("/organization")
-def create_organization():
-    global org 
+def api_create_organization():
+    global org
     data = request.json
+
     name = data.get("name")
     description = data.get("description", "")
 
     if not name:
         return jsonify({"error": "Name is required"}), 400
     
-    org = Organization(name, description)
+    org = create_organization(name, description)
     return jsonify({"message": f"Organization '{name}' created"}), 201
 
+
 @app.get("/organization")
-def get_organization():
+def api_get_organization():
     if org is None:
         return jsonify({"error": "No organization created yet"}), 404
     
-    return jsonify({
-        "name": org.name,
-        "description": [org.description],
-        "qualities": [{"name": q.name, "description": q.description} for q in org.qualities],
-        "constraints": [{"name": c.name, "description": c.description} for c in org.constraints],
-        
-    })
+    return jsonify(org.to_dict())
+
 
 @app.post("/organization/qualities")
-def add_quality():
+def api_add_quality():
     if org is None:
         return jsonify({"error": "Create an organization first"}), 400
     
@@ -115,22 +122,29 @@ def add_quality():
     if not name:
         return jsonify({"error": "Name is required"}), 400
     
-    org.add_quality(name, description)
-    return jsonify({"message": f"Quality'{name}' added"}), 201
+    add_quality_to_org(org, name, description)
+    return jsonify({"message": f"Quality '{name}' added"}), 201
+
 
 @app.post("/organization/constraints")
-def add_constraint():
+def api_add_constraint():
     if org is None:
-        return jsonify({"error": "Create an organization firs"}), 400
+        return jsonify({"error": "Create an organization first"}), 400
     
     data = request.json
     name = data.get("name")
     description = data.get("description", "")
 
     if not name:
-        return jsonify({"error": f"Constraint '{name}' added"}), 400
+        return jsonify({"error": "Name is required"}), 400
     
-    org.add_constraint(name, description)
+    add_constraint_to_org(org, name, description)
     return jsonify({"message": f"Constraint '{name}' added"}), 201
 
 
+# Get all tasks
+@app.get("/tasks")
+def api_get_tasks():
+    if default_project is None:
+        return jsonify([])
+    return jsonify([t.to_dict() for t in default_project.tasks])
