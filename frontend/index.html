@@ -70,7 +70,41 @@
             <p id="constraint-response"></p>
         </section>
 
+
         <hr>
+        <!-- Add Members -->
+        <section id="add-member-section">
+            <h2>Create Member</h2>
+
+            <form id="member-form">
+                <label for="member-name">Name:</label>
+                <input type="text" id="member-name" required>
+
+                <label for="member-role">Role:</label>
+                <input type="text" id="member-role" required>
+
+                <label for="member-hours">Available Hours:</label>
+                <input type="number" id="member-hours" required>
+
+                <h3>Qualities</h3>
+                <label for="member-qualities">Describe qualities:</label>
+                <textarea id="member-qualities"></textarea>
+
+                <h3>Constraints</h3>
+                <label for="member-constraints">Describe constraints:</label>
+                <textarea id="member-constraints"></textarea>
+
+                <button type="submit">Create Member</button>
+            </form>
+
+            <p id="member-response"></p>
+
+            <ul id="member-list"></ul>
+        </section>
+
+        <hr>
+
+        
 
         <!-- Task List -->
         <section id="task-list-section">

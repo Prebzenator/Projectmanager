@@ -1,4 +1,5 @@
 from backend.tables.attributes import Quality, Constraint
+from backend.tables.member import Member
 
 class Organization:
     def __init__(self, name, description=""):
@@ -7,6 +8,7 @@ class Organization:
         self.projects = []
         self.qualities = []
         self.constraints = []
+        self.members = []
 
     def add_project(self, project):
         self.projects.append(project)
@@ -16,6 +18,9 @@ class Organization:
 
     def add_constraint(self, name, description=""):
         self.constraints.append(Constraint(name, description))
+
+    def add_members(self, member: Member):
+        self.members.append(member)
 
     def to_dict(self):
         return {

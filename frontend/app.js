@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("task-form")
         .addEventListener("submit", handleCreateTask);
+
+    // Create Member – nå uten checkboxes
+    document.getElementById("member-form")
+        .addEventListener("submit", handleCreateMember);
 });
 
 
@@ -101,6 +105,68 @@ async function handleAddConstraint(event) {
         box.style.color = "red";
     }
 }
+
+
+
+// ---------------------------------------------------------
+// Create Member 
+// ---------------------------------------------------------
+async function handleCreateMember(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("member-name").value;
+    const role = document.getElementById("member-role").value;
+    const available_hours = parseInt(document.getElementById("member-hours").value);
+
+    // Hent tekst fra textarea og gjør om til lister
+    const qualities = document.getElementById("member-qualities").value
+        .split("\n")
+        .map(q => q.trim())
+        .filter(q => q !== "");
+
+    const constraints = document.getElementById("member-constraints").value
+        .split("\n")
+        .map(c => c.trim())
+        .filter(c => c !== "");
+
+    const res = await fetch("/member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name,
+            role,
+            available_hours,
+            qualities,
+            constraints
+        })
+    });
+
+    const result = await res.json();
+    const box = document.getElementById("member-response");
+
+    if (res.status === 201) {
+        box.textContent = "Member created!";
+        box.style.color = "green";
+
+        document.getElementById("member-form").reset();
+        addMemberToList(result.member);
+    } else {
+        box.textContent = result.error;
+        box.style.color = "red";
+    }
+}
+
+
+// ---------------------------------------------------------
+// Show members
+// ---------------------------------------------------------
+function addMemberToList(member) {
+    const list = document.getElementById("member-list");
+    const li = document.createElement("li");
+    li.textContent = `${member.name} – ${member.role} (${member.available_hours}h)`;
+    list.appendChild(li);
+}
+
 
 
 // ---------------------------------------------------------

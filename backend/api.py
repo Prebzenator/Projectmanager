@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, send_from_directory
 from backend.tables.organization import Organization
+from backend.features.create_member import create_member
 from backend.tables.project import Project
 from backend.features.create_task import create_task
 from backend.features.create_organization import (
@@ -32,6 +33,40 @@ def health_check():
 # Seeding data to have an organization implemented from start.
 org = None
 default_project = None
+
+
+# Feature: Create member. Creates API for creating a member in the application
+@app.post("/member")
+def api_create_member():
+    global org
+    
+    if org is None:
+        return jsonify({"error": "Create an organization first"}), 400
+
+    data = request.json
+
+    name = data.get("name")
+    role = data.get("role")
+    qualities = data.get("qualities", [])
+    constraints = data.get("constraints", [])
+    available_hours = data.get("available_hours", 0)
+
+    if not name or not role:
+        return jsonify({"error": "Name and role are required"}), 400
+
+    member = create_member(
+        org=org,
+        name=name,
+        role=role,
+        qualities=qualities,
+        constraints=constraints,
+        available_hours=available_hours
+    )
+
+    return jsonify({
+        "message": "Member created",
+        "member": member.to_dict()
+    }), 201
 
 
 # Feature: Create task. Creates API for creating a task in the application
@@ -142,9 +177,30 @@ def api_add_constraint():
     return jsonify({"message": f"Constraint '{name}' added"}), 201
 
 
+# NEW: Get all qualities
+@app.get("/qualities")
+def api_get_qualities():
+    if org is None:
+        return jsonify([])
+
+    return jsonify([q.to_dict() for q in org.qualities])
+
+
+# NEW: Get all constraints
+@app.get("/constraints")
+def api_get_constraints():
+    if org is None:
+        return jsonify([])
+
+    return jsonify([c.to_dict() for c in org.constraints])
+
+
 # Get all tasks
 @app.get("/tasks")
 def api_get_tasks():
     if default_project is None:
         return jsonify([])
     return jsonify([t.to_dict() for t in default_project.tasks])
+
+
+
