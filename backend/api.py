@@ -9,6 +9,8 @@ from backend.features.create_organization import (
     add_quality_to_org,
     add_constraint_to_org
 )
+from backend.features.create_project import create_project
+
 
 # Help the application find the right files (API)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Backend folder
@@ -177,6 +179,7 @@ def api_add_constraint():
     return jsonify({"message": f"Constraint '{name}' added"}), 201
 
 
+<<<<<<< HEAD
 # NEW: Get all qualities
 @app.get("/qualities")
 def api_get_qualities():
@@ -193,6 +196,40 @@ def api_get_constraints():
         return jsonify([])
 
     return jsonify([c.to_dict() for c in org.constraints])
+=======
+#Feature : Create project
+
+@app.post("/projects")
+def api_create_project():
+    global org
+
+    if org is None:
+        return jsonify({"error": "Create an organization first"}), 400
+
+    data = request.json
+
+    name = data.get("name")
+    duration = data.get("duration_weeks")
+    members = data.get("members", [])
+
+    # Validation
+    if not name:
+        return jsonify({"error": "Project name is required"}), 400
+    
+    if duration is None or not isinstance(duration, int) or duration <= 0:
+        return jsonify({"error": "Duration must be a positive integer"}), 400
+
+    # Create project
+    project = create_project(name, duration, members)
+
+    # Add project to organization
+    org.add_project(project)
+
+    return jsonify({
+        "message": "Project created",
+        "project": project.to_dict()
+    }), 201
+>>>>>>> 72e657116cd4918b866e6ecffdaaada2a9f1b055
 
 
 # Get all tasks

@@ -26,6 +26,7 @@ class Organization:
         return {
             "name": self.name,
             "description": self.description,
+            "projects": [p.to_dict() for p in self.projects],
             "qualities": [q.to_dict() for q in self.qualities],
             "constraints": [c.to_dict() for c in self.constraints]
         }
