@@ -179,7 +179,7 @@ def api_add_constraint():
     return jsonify({"message": f"Constraint '{name}' added"}), 201
 
 
-<<<<<<< HEAD
+
 # NEW: Get all qualities
 @app.get("/qualities")
 def api_get_qualities():
@@ -196,7 +196,7 @@ def api_get_constraints():
         return jsonify([])
 
     return jsonify([c.to_dict() for c in org.constraints])
-=======
+
 #Feature : Create project
 
 @app.post("/projects")
@@ -229,7 +229,7 @@ def api_create_project():
         "message": "Project created",
         "project": project.to_dict()
     }), 201
->>>>>>> 72e657116cd4918b866e6ecffdaaada2a9f1b055
+ 
 
 
 # Get all tasks
