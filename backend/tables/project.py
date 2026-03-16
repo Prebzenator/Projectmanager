@@ -17,6 +17,9 @@ class Project:
 
     def add_task(self, task):
         self.tasks.append(task)
+        # Keep tasks sorted by priority (highest first)
+        self.tasks.sort(key=lambda t: t.priority, reverse=True)
+
 
     def to_dict(self):
         return {

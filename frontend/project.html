@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="project.js" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Project Overview</h1>
+    </header>
+
+    <main>
+
+        <!-- Task List -->
+        <section id="task-list-section">
+            <h2>Tasks</h2>
+            <div id="task-list"></div>
+        </section>
+
+        <hr>
+
+        <!-- Create Task -->
+        <section id="create-task-section">
+            <h2>Create Task</h2>
+
+            <form id="task-form">
+
+                <label for="task-name">Name:</label>
+                <input type="text" id="task-name" required>
+
+                <label for="task-hours">Estimated Hours:</label>
+                <input type="number" id="task-hours" required>
+
+                <label for="task-deadline">Deadline:</label>
+                <input type="date" id="task-deadline" required>
+
+                <label for="task-priority">Priority (1–5):</label>
+                <input type="number" id="task-priority" min="1" max="5" value="1" required>
+
+                <label for="task-dependencies">Dependencies (optional):</label>
+                <select id="task-dependencies" multiple></select>
+
+                <button type="submit">Create Task</button>
+            </form>
+
+            <p id="task-response"></p>
+        </section>
+
+        <hr>
+
+        <!-- Generate Plan -->
+        <section id="generate-plan-section">
+            <h2>Generate Project Plan</h2>
+
+            <label for="plan-mode">Mode:</label>
+            <select id="plan-mode">
+                <option value="fastest">Fastest Completion</option>
+                <option value="thorough">Most Thorough</option>
+            </select>
+
+            <button id="generate-plan-btn">Generate Plan</button>
+
+            <p id="plan-response"></p>
+        </section>
+
+        <hr>
+
+        <!-- View Plan -->
+        <section id="view-plan-section">
+            <h2>View Plan</h2>
+            <button onclick="window.location.href='plan.html'">Go to Plan Page</button>
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ from backend.features.create_organization import (
     add_constraint_to_org
 )
 from backend.features.create_project import create_project
+from backend.features.generate_plan import generate_project_plan
 
 
 # Help the application find the right files (API)
@@ -81,7 +82,7 @@ def api_create_task():
 
     # Create default project only once
     if default_project is None:
-        default_project = Project("Hovedprosjekt")
+        default_project = Project("Main Project", duration_weeks=12, members=[])
         org.add_project(default_project)
 
     data = request.json
@@ -93,7 +94,7 @@ def api_create_task():
     dependencies = data.get("dependencies", [])
 
     # Validation for required field, and right input
-    if not name or not hours or not deadline:
+    if not name or hours is None or not deadline:
         return jsonify({"error": "Missing required fields"}), 400
     
     if not isinstance(priority, int) or priority < 1 or priority > 5:
@@ -239,5 +240,20 @@ def api_get_tasks():
         return jsonify([])
     return jsonify([t.to_dict() for t in default_project.tasks])
 
+# Generate plan by using default project
+@app.post("/generate_plan")
+def api_generate_plan():
+    global default_project
 
+    if default_project is None:
+        return jsonify({"error": "No project exists"}), 400
 
+    data = request.json or {}
+    mode = data.get("mode", "fastest")
+
+    plan = generate_project_plan(default_project, mode=mode)
+
+    return jsonify({
+        "message": "Plan generated",
+        "plan": plan
+    }), 200
