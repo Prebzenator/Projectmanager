@@ -19,7 +19,7 @@ class Organization:
     def add_constraint(self, name, description=""):
         self.constraints.append(Constraint(name, description))
 
-    def add_members(self, member: Member):
+    def add_member(self, member: Member):   # FIXED: was add_members (typo)
         self.members.append(member)
 
     def to_dict(self):
@@ -28,5 +28,6 @@ class Organization:
             "description": self.description,
             "projects": [p.to_dict() for p in self.projects],
             "qualities": [q.to_dict() for q in self.qualities],
-            "constraints": [c.to_dict() for c in self.constraints]
+            "constraints": [c.to_dict() for c in self.constraints],
+            "members": [m.to_dict() for m in self.members]
         }
