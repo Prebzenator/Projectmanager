@@ -42,7 +42,16 @@
                 <input type="number" id="task-priority" min="1" max="5" value="1" required>
 
                 <label for="task-dependencies">Dependencies (optional):</label>
+                <small style="color:#777; margin-top: -6px;">Hold Ctrl / Cmd to select multiple tasks that must finish before this one starts.</small>
                 <select id="task-dependencies" multiple></select>
+
+                <!-- NEW: select from org's existing qualities -->
+                <label for="task-qualities">Required Qualities (optional):</label>
+                <select id="task-qualities" multiple></select>
+
+                <!-- NEW: select from org's existing constraints -->
+                <label for="task-constraints">Required Constraints (optional):</label>
+                <select id="task-constraints" multiple></select>
 
                 <button type="submit">Create Task</button>
             </form>

@@ -1,8 +1,9 @@
 // -------------------------------
-// Load tasks on page load
+// Load on page load
 // -------------------------------
 document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
+    loadQualitiesAndConstraints(); // NEW: fill quality/constraint dropdowns
     setupCreateTaskForm();
     setupGeneratePlanButton();
 });
@@ -23,6 +24,11 @@ async function loadTasks() {
 
         // Display tasks
         taskListDiv.innerHTML = "";
+
+        if (tasks.length === 0) {
+            taskListDiv.innerHTML = "<p>No tasks yet.</p>";
+        }
+
         tasks.forEach(task => {
             const div = document.createElement("div");
             div.className = "task-item";
@@ -31,7 +37,9 @@ async function loadTasks() {
                 Hours: ${task.hours}<br>
                 Deadline: ${task.deadline}<br>
                 Priority: ${task.priority}<br>
-                Dependencies: ${task.dependencies.join(", ") || "None"}
+                Required Qualities: ${task.required_qualities.join(", ") || "None"}<br>
+                Required Constraints: ${task.required_constraints.join(", ") || "None"}<br>
+                Dependencies: ${task.dependency_names.join(", ") || "None"}
             `;
             taskListDiv.appendChild(div);
         });
@@ -53,6 +61,54 @@ async function loadTasks() {
 
 
 // -------------------------------
+// NEW: Load qualities and constraints from the org
+// and populate the two dropdowns in the task form
+// -------------------------------
+async function loadQualitiesAndConstraints() {
+    try {
+        // Qualities
+        const qualRes = await fetch("/qualities");
+        const qualities = await qualRes.json();
+
+        const qualSelect = document.getElementById("task-qualities");
+        qualSelect.innerHTML = "";
+
+        if (qualities.length === 0) {
+            qualSelect.innerHTML = "<option disabled>No qualities added yet</option>";
+        } else {
+            qualities.forEach(q => {
+                const option = document.createElement("option");
+                option.value = q.name;
+                option.textContent = q.name;
+                qualSelect.appendChild(option);
+            });
+        }
+
+        // Constraints
+        const conRes = await fetch("/constraints");
+        const constraints = await conRes.json();
+
+        const conSelect = document.getElementById("task-constraints");
+        conSelect.innerHTML = "";
+
+        if (constraints.length === 0) {
+            conSelect.innerHTML = "<option disabled>No constraints added yet</option>";
+        } else {
+            constraints.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c.name;
+                option.textContent = c.name;
+                conSelect.appendChild(option);
+            });
+        }
+
+    } catch (err) {
+        console.error("Failed to load qualities/constraints:", err);
+    }
+}
+
+
+// -------------------------------
 // Create Task
 // -------------------------------
 function setupCreateTaskForm() {
@@ -67,15 +123,25 @@ function setupCreateTaskForm() {
         const deadline = document.getElementById("task-deadline").value;
         const priority = parseInt(document.getElementById("task-priority").value);
 
+        // Dependencies
         const dependenciesSelect = document.getElementById("task-dependencies");
         const dependencies = Array.from(dependenciesSelect.selectedOptions).map(opt => opt.value);
+
+        // NEW: selected qualities and constraints
+        const qualSelect = document.getElementById("task-qualities");
+        const required_qualities = Array.from(qualSelect.selectedOptions).map(opt => opt.value);
+
+        const conSelect = document.getElementById("task-constraints");
+        const required_constraints = Array.from(conSelect.selectedOptions).map(opt => opt.value);
 
         const payload = {
             name,
             hours,
             deadline,
             priority,
-            dependencies
+            dependencies,
+            required_qualities,     // NEW
+            required_constraints    // NEW
         };
 
         try {
@@ -88,7 +154,6 @@ function setupCreateTaskForm() {
             const data = await res.json();
             responseP.textContent = data.message || "Task created.";
 
-            // Reload tasks
             loadTasks();
             form.reset();
 

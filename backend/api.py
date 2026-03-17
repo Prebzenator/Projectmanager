@@ -33,16 +33,16 @@ def health_check():
     return {"status": "ok"}
 
 
-# Seeding data to have an organization implemented from start.
+# In-memory state
 org = None
 default_project = None
 
 
-# Feature: Create member. Creates API for creating a member in the application
+# Feature: Create member
 @app.post("/member")
 def api_create_member():
     global org
-    
+
     if org is None:
         return jsonify({"error": "Create an organization first"}), 400
 
@@ -72,7 +72,7 @@ def api_create_member():
     }), 201
 
 
-# Feature: Create task. Creates API for creating a task in the application
+# Feature: Create task
 @app.post("/tasks")
 def api_create_task():
     global default_project
@@ -93,31 +93,35 @@ def api_create_task():
     priority = data.get("priority", 1)
     dependencies = data.get("dependencies", [])
 
-    # Validation for required field, and right input
+    # NEW: read qualities and constraints from the request
+    required_qualities = data.get("required_qualities", [])
+    required_constraints = data.get("required_constraints", [])
+
+    # Validation
     if not name or hours is None or not deadline:
         return jsonify({"error": "Missing required fields"}), 400
-    
+
     if not isinstance(priority, int) or priority < 1 or priority > 5:
         return jsonify({"error": "Priority must be an integer between 1 and 5"}), 400
 
-    # Use the feature-layer function to create task.
+    # Create task — now passes qualities and constraints too
     task = create_task(
         project=default_project,
         name=name,
         hours=hours,
         deadline=deadline,
-        priority=priority
+        priority=priority,
+        required_qualities=required_qualities,      # NEW
+        required_constraints=required_constraints   # NEW
     )
 
     # Resolve dependencies (if any)
     dependency_tasks = [
         t for t in default_project.tasks if t.id in dependencies
     ]
-
     for dep in dependency_tasks:
         task.add_dependency(dep)
 
-    # Build response
     return jsonify({
         "message": "Task created",
         "task": task.to_dict()
@@ -135,7 +139,7 @@ def api_create_organization():
 
     if not name:
         return jsonify({"error": "Name is required"}), 400
-    
+
     org = create_organization(name, description)
     return jsonify({"message": f"Organization '{name}' created"}), 201
 
@@ -144,7 +148,7 @@ def api_create_organization():
 def api_get_organization():
     if org is None:
         return jsonify({"error": "No organization created yet"}), 404
-    
+
     return jsonify(org.to_dict())
 
 
@@ -152,14 +156,14 @@ def api_get_organization():
 def api_add_quality():
     if org is None:
         return jsonify({"error": "Create an organization first"}), 400
-    
+
     data = request.json
     name = data.get("name")
     description = data.get("description", "")
 
     if not name:
         return jsonify({"error": "Name is required"}), 400
-    
+
     add_quality_to_org(org, name, description)
     return jsonify({"message": f"Quality '{name}' added"}), 201
 
@@ -168,38 +172,35 @@ def api_add_quality():
 def api_add_constraint():
     if org is None:
         return jsonify({"error": "Create an organization first"}), 400
-    
+
     data = request.json
     name = data.get("name")
     description = data.get("description", "")
 
     if not name:
         return jsonify({"error": "Name is required"}), 400
-    
+
     add_constraint_to_org(org, name, description)
     return jsonify({"message": f"Constraint '{name}' added"}), 201
 
 
-
-# NEW: Get all qualities
+# Get all qualities
 @app.get("/qualities")
 def api_get_qualities():
     if org is None:
         return jsonify([])
-
     return jsonify([q.to_dict() for q in org.qualities])
 
 
-# NEW: Get all constraints
+# Get all constraints
 @app.get("/constraints")
 def api_get_constraints():
     if org is None:
         return jsonify([])
-
     return jsonify([c.to_dict() for c in org.constraints])
 
-#Feature : Create project
 
+# Feature: Create project
 @app.post("/projects")
 def api_create_project():
     global org
@@ -213,24 +214,19 @@ def api_create_project():
     duration = data.get("duration_weeks")
     members = data.get("members", [])
 
-    # Validation
     if not name:
         return jsonify({"error": "Project name is required"}), 400
-    
+
     if duration is None or not isinstance(duration, int) or duration <= 0:
         return jsonify({"error": "Duration must be a positive integer"}), 400
 
-    # Create project
     project = create_project(name, duration, members)
-
-    # Add project to organization
     org.add_project(project)
 
     return jsonify({
         "message": "Project created",
         "project": project.to_dict()
     }), 201
- 
 
 
 # Get all tasks
@@ -240,7 +236,16 @@ def api_get_tasks():
         return jsonify([])
     return jsonify([t.to_dict() for t in default_project.tasks])
 
-# Generate plan by using default project
+
+# Get all members
+@app.get("/members")
+def api_get_members():
+    if org is None:
+        return jsonify([])
+    return jsonify([m.to_dict() for m in org.members])
+
+
+# Generate plan
 @app.post("/generate_plan")
 def api_generate_plan():
     global default_project

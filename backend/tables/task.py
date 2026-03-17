@@ -1,7 +1,8 @@
 import uuid
 
 class Task:
-    def __init__(self, name, hours, deadline, priority=1, required_qualities=None, required_constraints=None):
+    def __init__(self, name, hours, deadline, priority=1,
+                 required_qualities=None, required_constraints=None):
         # Unique identifier for referencing tasks
         self.id = str(uuid.uuid4())
 
@@ -27,7 +28,7 @@ class Task:
             self.dependencies.append(task)
 
     def to_dict(self):
-        """Converts the task into a JSON‑friendly dictionary."""
+        """Converts the task into a JSON-friendly dictionary."""
         return {
             "id": self.id,
             "name": self.name,
@@ -35,7 +36,10 @@ class Task:
             "deadline": self.deadline,
             "priority": self.priority,
             "status": self.status,
-            "dependencies": [d.id for d in self.dependencies]
+            "dependencies": [d.id for d in self.dependencies],
+            "dependency_names": [d.name for d in self.dependencies],  # human-readable names
+            "required_qualities": self.required_qualities,      # NEW
+            "required_constraints": self.required_constraints   # NEW
         }
 
     def __repr__(self):
