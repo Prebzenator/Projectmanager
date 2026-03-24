@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organization</title>
+    <link rel="stylesheet" href="organization.css">
+</head>
+<body>
+
+<header class="top-bar">
+    <h1 id="org-name">Organization</h1>
+    <button id="create-project-btn" class="primary-btn">Create Project</button>
+</header>
+
+<main class="board">
+
+
+    <section class="column" id="projects-column">
+        <h2>Projects</h2>
+        <button id="create-project-btn" class="primary-btn">Create Project</button>
+        <div class="card-container" id="projects-list"></div>
+    </section>
+
+    <section class="column" id="members-column">
+        <h2>Members</h2>
+        <button id="add-member-btn">Add Member</button>
+        <div class="card-container" id="members-list"></div>
+    </section>
+
+    <section class="column" id="qualities-column">
+        <h2>Qualities</h2>
+        <button id="add-quality-btn">Add Quality</button>
+        <div class="card-container" id="qualities-list"></div>
+    </section>
+
+    <section class="column" id="constraints-column">
+        <h2>Constraints</h2>
+        <button id="add-constraint-btn">Add Constraint</button>
+        <div class="card-container" id="constraints-list"></div>
+    </section>
+
+</main>
+
+<script src="organization.js"></script>
+</body>
+</html>

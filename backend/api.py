@@ -245,6 +245,7 @@ def api_get_members():
     return jsonify([m.to_dict() for m in org.members])
 
 
+
 # Generate plan
 @app.post("/generate_plan")
 def api_generate_plan():
@@ -262,3 +263,7 @@ def api_generate_plan():
         "message": "Plan generated",
         "plan": plan
     }), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
