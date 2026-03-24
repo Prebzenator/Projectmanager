@@ -6,10 +6,13 @@ def create_member(org, name, role, qualities=None, constraints=None, available_h
     member = Member(
         name=name,
         role=role,
-        qualities=qualities or [],
-        constraints=constraints or [],
+        qualities=[],
+        constraints=[],
         available_hours=available_hours
     )
+
+    assign_member_attributes(org, member, qualities or [], constraints or [])
+
     org.add_member(member)
     return member
 

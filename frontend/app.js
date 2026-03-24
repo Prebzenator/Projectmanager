@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
     populateDependenciesDropdown();
+    populateMemberAttributes();
+    loadOrganizationCard();
 
     document.getElementById("organization-form")
         .addEventListener("submit", handleCreateOrganization);
@@ -42,12 +44,40 @@ async function handleCreateOrganization(event) {
         box.textContent = "Organization created!";
         box.style.color = "green";
         document.getElementById("organization-form").reset();
+        populateMemberAttributes();
+        loadOrganizationCard();
     } else {
         box.textContent = result.error;
         box.style.color = "red";
     }
 }
 
+// ---------------------------------------------------------
+// Load Organization Card
+// ---------------------------------------------------------
+async function loadOrganizationCard() {
+    const container = document.getElementById("organization-list");
+    if (!container)return;
+
+    try {
+        const res = await fetch("/organization");
+
+        if (!res.ok) {
+            container.innerHTML = "<p>No organization created yet.</p>";
+            return;
+        }
+
+        const org = await res.json();
+        container.innerHTML = `
+            <div class="organization-card" onclick="window.location.href='/organization.html'">
+                <h3>${org.name}</h3>
+                <p>${org.description || "No description"}</p>
+            </div>
+        `;
+    } catch (error) {
+        console.error("Could not load organization", error);
+    }
+}
 
 // ---------------------------------------------------------
 // Add Quality
@@ -71,6 +101,7 @@ async function handleAddQuality(event) {
         box.textContent = "Quality added!";
         box.style.color = "green";
         document.getElementById("quality-form").reset();
+        populateMemberAttributes();
     } else {
         box.textContent = result.error;
         box.style.color = "red";
@@ -100,12 +131,46 @@ async function handleAddConstraint(event) {
         box.textContent = "Constraint added!";
         box.style.color = "green";
         document.getElementById("constraint-form").reset();
+        populateMemberAttributes();
     } else {
         box.textContent = result.error;
         box.style.color = "red";
     }
 }
 
+// ---------------------------------------------------------
+// Populate Member Qualities and Constraints
+// ---------------------------------------------------------
+async function populateMemberAttributes() {
+    const qualitiesSelect = document.getElementById("member-qualities");
+    const constraintsSelect = document.getElementById("member-constraints");
+
+    qualitiesSelect.innerHTML = "";
+    constraintsSelect.innerHTML = "";
+
+    try{
+        const res = await fetch("/organization")
+        const org = await res.json();
+
+        if (!org.qualities || !org.constraints)return; 
+
+        org.qualities.forEach(quality => {
+            const option = document.createElement("option");
+            option.value = quality.name;
+            option.textContent = quality.name;
+            qualitiesSelect.appendChild(option);
+        });
+
+        org.constraints.forEach(constraint => {
+            const option = document.createElement("option");
+            option.value = constraint.name;
+            option.textContent = constraint.name;
+            constraintsSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error populating member attributes:", error);
+    }
+}
 
 
 // ---------------------------------------------------------
@@ -119,15 +184,14 @@ async function handleCreateMember(event) {
     const available_hours = parseInt(document.getElementById("member-hours").value);
 
     // Hent tekst fra textarea og gjør om til lister
-    const qualities = document.getElementById("member-qualities").value
-        .split("\n")
-        .map(q => q.trim())
-        .filter(q => q !== "");
+    const qualities = Array.from(
+        document.getElementById("member-qualities").selectedOptions
+    ).map(opt => opt.value);
 
-    const constraints = document.getElementById("member-constraints").value
-        .split("\n")
-        .map(c => c.trim())
-        .filter(c => c !== "");
+    
+    const constraints = Array.from(
+        document.getElementById("member-constraints").selectedOptions
+    ).map(opt => opt.value);
 
     const res = await fetch("/member", {
         method: "POST",

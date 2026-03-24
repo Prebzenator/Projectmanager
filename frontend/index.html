@@ -70,6 +70,11 @@
             <p id="constraint-response"></p>
         </section>
 
+        <section id="organization-list-section">
+            <h2>Organizations</h2>
+            <div id="organization-list"></div>
+        </section>
+
 
         <hr>
         <!-- Add Members -->
@@ -87,12 +92,12 @@
                 <input type="number" id="member-hours" required>
 
                 <h3>Qualities</h3>
-                <label for="member-qualities">Describe qualities:</label>
-                <textarea id="member-qualities"></textarea>
+                <label for="member-qualities">Select qualities:</label>
+                <select id="member-qualities" multiple></select>
 
                 <h3>Constraints</h3>
-                <label for="member-constraints">Describe constraints:</label>
-                <textarea id="member-constraints"></textarea>
+                <label for="member-constraints">Select constraints:</label>
+                <select id="member-constraints" multiple></select>
 
                 <button type="submit">Create Member</button>
             </form>
