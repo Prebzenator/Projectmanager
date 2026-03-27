@@ -4,43 +4,77 @@
     <meta charset="UTF-8">
     <title>Organization</title>
     <link rel="stylesheet" href="organization.css">
+    <script src="organization.js" defer></script>
 </head>
+
 <body>
 
 <header class="top-bar">
     <h1 id="org-name">Organization</h1>
-    <button id="create-project-btn" class="primary-btn">Create Project</button>
 </header>
 
 <main class="board">
 
-
-    <section class="column" id="projects-column">
+    <!-- PROJECTS -->
+    <section class="column">
         <h2>Projects</h2>
-        <button id="create-project-btn" class="primary-btn">Create Project</button>
+
+        <form id="project-form" class="inline-form">
+            <input type="text" id="project-name" placeholder="Project name" required>
+            <input type="number" id="project-duration" placeholder="Duration (weeks)" required>
+            <button type="submit" class="primary-btn">Add</button>
+        </form>
+
         <div class="card-container" id="projects-list"></div>
     </section>
 
-    <section class="column" id="members-column">
+    <!-- MEMBERS -->
+    <section class="column">
         <h2>Members</h2>
-        <button id="add-member-btn">Add Member</button>
+
+        <form id="member-form" class="inline-form">
+            <input type="text" id="member-name" placeholder="Name" required>
+            <input type="text" id="member-role" placeholder="Role" required>
+
+            <label>Qualities:</label>
+            <select id="member-qualities" multiple></select>
+
+            <label>Constraints:</label>
+            <select id="member-constraints" multiple></select>
+
+            <button type="submit">Add</button>
+        </form>
+
         <div class="card-container" id="members-list"></div>
     </section>
 
-    <section class="column" id="qualities-column">
+    <!-- QUALITIES -->
+    <section class="column">
         <h2>Qualities</h2>
-        <button id="add-quality-btn">Add Quality</button>
+
+        <form id="quality-form" class="inline-form">
+            <input type="text" id="quality-name" placeholder="Name" required>
+            <input type="text" id="quality-description" placeholder="Description">
+            <button type="submit">Add</button>
+        </form>
+
         <div class="card-container" id="qualities-list"></div>
     </section>
 
-    <section class="column" id="constraints-column">
+    <!-- CONSTRAINTS -->
+    <section class="column">
         <h2>Constraints</h2>
-        <button id="add-constraint-btn">Add Constraint</button>
+
+        <form id="constraint-form" class="inline-form">
+            <input type="text" id="constraint-name" placeholder="Name" required>
+            <input type="text" id="constraint-description" placeholder="Description">
+            <button type="submit">Add</button>
+        </form>
+
         <div class="card-container" id="constraints-list"></div>
     </section>
 
 </main>
 
-<script src="organization.js"></script>
 </body>
 </html>

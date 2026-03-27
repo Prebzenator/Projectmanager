@@ -9,144 +9,36 @@
 
 <body>
 
-    <header>
-        <h1>Project Planner</h1>
-    </header>
+<header>
+    <h1>Project Planner</h1>
+</header>
 
-    <main>
+<main>
 
-        <!-- Create Organization -->
-        <section id="create-organization-section">
-            <h2>Create Organization</h2>
+    <!-- Create Organization -->
+    <section id="create-organization-section">
+        <h2>Create Organization</h2>
 
-            <form id="organization-form">
-                <label for="org-name">Name:</label>
-                <input type="text" id="org-name" required>
+        <form id="organization-form">
+            <label for="org-name">Name:</label>
+            <input type="text" id="org-name" required>
 
-                <label for="org-description">Description:</label>
-                <input type="text" id="org-description">
+            <label for="org-description">Description:</label>
+            <input type="text" id="org-description">
 
-                <button type="submit">Create Organization</button>
-            </form>
+            <button type="submit">Create Organization</button>
+        </form>
 
-            <p id="org-response"></p>
-        </section>
+        <p id="org-response"></p>
+    </section>
 
-        <hr>
+    <section id="organization-entry" style="display:none;">
+        <h2>Organization</h2>
+        <div id="org-card"></div>
+        <button id="open-org-btn" class="primary-btn">Open Organization</button>
+    </section>
 
-        <!-- Add Qualities -->
-        <section id="add-quality-section">
-            <h2>Add Quality</h2>
-
-            <form id="quality-form">
-                <label for="quality-name">Name:</label>
-                <input type="text" id="quality-name" required>
-
-                <label for="quality-description">Description:</label>
-                <input type="text" id="quality-description">
-
-                <button type="submit">Add Quality</button>
-            </form>
-
-            <p id="quality-response"></p>
-        </section>
-
-        <hr>
-
-        <!-- Add Constraints -->
-        <section id="add-constraint-section">
-            <h2>Add Constraint</h2>
-
-            <form id="constraint-form">
-                <label for="constraint-name">Name:</label>
-                <input type="text" id="constraint-name" required>
-
-                <label for="constraint-description">Description:</label>
-                <input type="text" id="constraint-description">
-
-                <button type="submit">Add Constraint</button>
-            </form>
-
-            <p id="constraint-response"></p>
-        </section>
-
-        <section id="organization-list-section">
-            <h2>Organizations</h2>
-            <div id="organization-list"></div>
-        </section>
-
-
-        <hr>
-        <!-- Add Members -->
-        <section id="add-member-section">
-            <h2>Create Member</h2>
-
-            <form id="member-form">
-                <label for="member-name">Name:</label>
-                <input type="text" id="member-name" required>
-
-                <label for="member-role">Role:</label>
-                <input type="text" id="member-role" required>
-
-                <label for="member-hours">Available Hours:</label>
-                <input type="number" id="member-hours" required>
-
-                <h3>Qualities</h3>
-                <label for="member-qualities">Select qualities:</label>
-                <select id="member-qualities" multiple></select>
-
-                <h3>Constraints</h3>
-                <label for="member-constraints">Select constraints:</label>
-                <select id="member-constraints" multiple></select>
-
-                <button type="submit">Create Member</button>
-            </form>
-
-            <p id="member-response"></p>
-
-            <ul id="member-list"></ul>
-        </section>
-
-        <hr>
-
-        
-
-        <!-- Task List -->
-        <section id="task-list-section">
-            <h2>Tasks</h2>
-            <div id="task-list"></div>
-        </section>
-
-        <hr>
-
-        <!-- Create Task -->
-        <section id="create-task-section">
-            <h2>Create Task</h2>
-
-            <form id="task-form">
-
-                <label for="task-name">Name:</label>
-                <input type="text" id="task-name" required>
-
-                <label for="task-hours">Estimated Hours:</label>
-                <input type="number" id="task-hours" required>
-
-                <label for="task-deadline">Deadline:</label>
-                <input type="date" id="task-deadline" required>
-
-                <label for="task-priority">Priority (1–5):</label>
-                <input type="number" id="task-priority" min="1" max="5" value="1" required>
-
-                <label for="task-dependencies">Dependencies (optional):</label>
-                <select id="task-dependencies" multiple></select>
-
-                <button type="submit">Create Task</button>
-            </form>
-
-            <p id="task-response"></p>
-        </section>
-
-    </main>
+</main>
 
 </body>
 </html>

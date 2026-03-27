@@ -220,8 +220,8 @@ def api_create_project():
     if duration is None or not isinstance(duration, int) or duration <= 0:
         return jsonify({"error": "Duration must be a positive integer"}), 400
 
-    project = create_project(name, duration, members)
-    org.add_project(project)
+    # IMPORTANT: pass org into create_project, it already adds to org
+    project = create_project(org, name, duration, members)
 
     return jsonify({
         "message": "Project created",
