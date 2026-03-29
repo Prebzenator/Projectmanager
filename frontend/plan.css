@@ -112,3 +112,13 @@
     color: #999;
     font-size: 0.9rem;
 }
+
+.task-name {
+    font-weight: 600;
+}
+
+.assigned-member {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 2px;
+}

@@ -47,10 +47,26 @@ function renderPlan() {
         const row = document.createElement("div");
         row.className = "timeline-row";
 
+        // Task label container
         const label = document.createElement("div");
         label.className = "task-label";
-        label.textContent = item.task_name;
 
+        // Task name
+        const nameEl = document.createElement("div");
+        nameEl.textContent = item.task_name;
+        nameEl.className = "task-name";
+
+        // Assigned member (cleaner UI)
+        const assignedEl = document.createElement("div");
+        assignedEl.className = "assigned-member";
+        assignedEl.textContent = item.assigned_member
+            ? `→ ${item.assigned_member}`
+            : "→ Unassigned";
+
+        label.appendChild(nameEl);
+        label.appendChild(assignedEl);
+
+        // Timeline bar
         const track = document.createElement("div");
         track.className = "task-track";
 

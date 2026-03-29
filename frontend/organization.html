@@ -15,39 +15,6 @@
 
 <main class="board">
 
-    <!-- PROJECTS -->
-    <section class="column">
-        <h2>Projects</h2>
-
-        <form id="project-form" class="inline-form">
-            <input type="text" id="project-name" placeholder="Project name" required>
-            <input type="number" id="project-duration" placeholder="Duration (weeks)" required>
-            <button type="submit" class="primary-btn">Add</button>
-        </form>
-
-        <div class="card-container" id="projects-list"></div>
-    </section>
-
-    <!-- MEMBERS -->
-    <section class="column">
-        <h2>Members</h2>
-
-        <form id="member-form" class="inline-form">
-            <input type="text" id="member-name" placeholder="Name" required>
-            <input type="text" id="member-role" placeholder="Role" required>
-
-            <label>Qualities:</label>
-            <select id="member-qualities" multiple></select>
-
-            <label>Constraints:</label>
-            <select id="member-constraints" multiple></select>
-
-            <button type="submit">Add</button>
-        </form>
-
-        <div class="card-container" id="members-list"></div>
-    </section>
-
     <!-- QUALITIES -->
     <section class="column">
         <h2>Qualities</h2>
@@ -72,6 +39,43 @@
         </form>
 
         <div class="card-container" id="constraints-list"></div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="column">
+        <h2>Members</h2>
+
+        <form id="member-form" class="inline-form">
+            <input type="text" id="member-name" placeholder="Name" required>
+            <input type="text" id="member-role" placeholder="Role" required>
+
+            <label>Qualities:</label>
+            <div id="member-qualities-box" class="checkbox-list"></div>
+
+            <label>Constraints:</label>
+            <div id="member-constraints-box" class="checkbox-list"></div>
+
+            <button type="submit">Add</button>
+        </form>
+
+        <div class="card-container" id="members-list"></div>
+    </section>
+
+    <!-- PROJECTS (FLYTTET NED HIT) -->
+    <section class="column">
+        <h2>Projects</h2>
+
+        <form id="project-form" class="inline-form">
+            <input type="text" id="project-name" placeholder="Project name" required>
+            <input type="number" id="project-duration" placeholder="Duration (weeks)" required>
+
+            <label>Members:</label>
+            <div id="project-members-box" class="checkbox-list"></div>
+
+            <button type="submit" class="primary-btn">Add</button>
+        </form>
+
+        <div class="card-container" id="projects-list"></div>
     </section>
 
 </main>

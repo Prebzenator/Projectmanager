@@ -29,6 +29,7 @@ async function loadOrganization() {
     renderMembers(org.members);
     renderQualities(org.qualities);
     renderConstraints(org.constraints);
+    renderProjectMembersCheckboxes(org.members);
 }
 
 
@@ -42,24 +43,34 @@ async function loadMemberAttributes() {
     const cRes = await fetch("/constraints");
     const constraints = await cRes.json();
 
-    const qSelect = document.getElementById("member-qualities");
-    const cSelect = document.getElementById("member-constraints");
+    const qBox = document.getElementById("member-qualities-box");
+    const cBox = document.getElementById("member-constraints-box");
 
-    qSelect.innerHTML = "";
-    cSelect.innerHTML = "";
+    qBox.innerHTML = "";
+    cBox.innerHTML = "";
 
     qualities.forEach(q => {
-        const opt = document.createElement("option");
-        opt.value = q.name;
-        opt.textContent = q.name;
-        qSelect.appendChild(opt);
+        const wrapper = document.createElement("label");
+        wrapper.className = "checkbox-item";
+
+        wrapper.innerHTML = `
+            <input type="checkbox" value="${q.name}">
+            ${q.name}
+        `;
+
+        qBox.appendChild(wrapper);
     });
 
     constraints.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.name;
-        opt.textContent = c.name;
-        cSelect.appendChild(opt);
+        const wrapper = document.createElement("label");
+        wrapper.className = "checkbox-item";
+
+        wrapper.innerHTML = `
+            <input type="checkbox" value="${c.name}">
+            ${c.name}
+        `;
+
+        cBox.appendChild(wrapper);
     });
 }
 
@@ -79,7 +90,7 @@ function renderProjects(projects) {
             Duration: ${project.duration_weeks} weeks<br>
             Members: ${project.members.length}
         `;
-        card.onclick = () => window.location.href = "project.html";
+        card.onclick = () => window.location.href = `project.html?project=${project.id}`;
         container.appendChild(card);
     });
 }
@@ -88,14 +99,16 @@ function renderMembers(members) {
     const container = document.getElementById("members-list");
     container.innerHTML = "";
 
-    members.forEach(member => {
+    members.forEach((member, index) => {
         const card = document.createElement("div");
         card.className = "card";
+
         card.innerHTML = `
             <strong>${member.name}</strong> (${member.role})<br>
             Qualities: ${member.qualities.length ? member.qualities.join(", ") : "None"}<br>
             Constraints: ${member.constraints.length ? member.constraints.join(", ") : "None"}
         `;
+
         container.appendChild(card);
     });
 }
@@ -124,6 +137,26 @@ function renderConstraints(constraints) {
     });
 }
 
+function renderProjectMembersCheckboxes(members) {
+    const box = document.getElementById("project-members-box");
+    if (!box) return;
+
+    box.innerHTML = "";
+
+    members.forEach(m => {
+        const wrapper = document.createElement("label");
+        wrapper.className = "checkbox-item";
+
+        // Viktig: bruk navn som value
+        wrapper.innerHTML = `
+            <input type="checkbox" value="${m.name}">
+            ${m.name} (${m.role})
+        `;
+
+        box.appendChild(wrapper);
+    });
+}
+
 
 // ------------------------------
 // Create functions
@@ -134,10 +167,14 @@ async function handleCreateProject(e) {
     const name = document.getElementById("project-name").value;
     const duration_weeks = parseInt(document.getElementById("project-duration").value);
 
+    const members = Array.from(
+        document.querySelectorAll("#project-members-box input[type='checkbox']:checked")
+    ).map(cb => cb.value); // navn
+
     await fetch("/projects", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ name, duration_weeks })
+        body: JSON.stringify({ name, duration_weeks, members })
     });
 
     e.target.reset();
@@ -151,12 +188,12 @@ async function handleCreateMember(e) {
     const role = document.getElementById("member-role").value;
 
     const qualities = Array.from(
-        document.getElementById("member-qualities").selectedOptions
-    ).map(o => o.value);
+        document.querySelectorAll("#member-qualities-box input[type='checkbox']:checked")
+    ).map(cb => cb.value);
 
     const constraints = Array.from(
-        document.getElementById("member-constraints").selectedOptions
-    ).map(o => o.value);
+        document.querySelectorAll("#member-constraints-box input[type='checkbox']:checked")
+    ).map(cb => cb.value);
 
     await fetch("/member", {
         method: "POST",
@@ -171,7 +208,8 @@ async function handleCreateMember(e) {
     });
 
     e.target.reset();
-    loadOrganization();
+    await loadOrganization();
+    await loadMemberAttributes();
 }
 
 async function handleCreateQuality(e) {
@@ -188,7 +226,7 @@ async function handleCreateQuality(e) {
 
     e.target.reset();
     await loadOrganization();
-    await loadMemberAttributes();  // VIKTIG: oppdater member-select
+    await loadMemberAttributes();
 }
 
 async function handleCreateConstraint(e) {
@@ -205,5 +243,5 @@ async function handleCreateConstraint(e) {
 
     e.target.reset();
     await loadOrganization();
-    await loadMemberAttributes();  // VIKTIG: oppdater member-select
+    await loadMemberAttributes();
 }

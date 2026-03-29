@@ -44,7 +44,11 @@ def generate_project_plan(project, mode="fastest"):
     for task_id in topo_order:                              # O(n log n)
         push(task_map[task_id])
 
-    # Build plan
+    # Member assignment
+    members = project.members or []
+    member_index = 0
+
+    # Build plan (sequential timeline as before)
     current_time = 0
     plan = []
 
@@ -56,12 +60,18 @@ def generate_project_plan(project, mode="fastest"):
         end = current_time + task.hours
         current_time = end
 
+        # Assign member to plan
+        assigned_member = None
+        if members:
+            assigned_member = members[member_index % len(members)]
+            member_index += 1
+
         plan.append({
             "task_id": task.id,
             "task_name": task.name,
             "start": start,
             "end": end,
-            "assigned_member": None,
+            "assigned_member": assigned_member,
             "dependencies": [d.id for d in task.dependencies]
         })
 

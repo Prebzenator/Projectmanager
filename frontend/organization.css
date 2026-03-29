@@ -59,3 +59,26 @@ body {
     transform: scale(1.02);
     background: #f0f0f0;
 }
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.delete-member-btn {
+    float: right;
+    background: transparent;
+    border: none;
+    color: #c00;
+    font-size: 1.2rem;
+    cursor: pointer;
+}

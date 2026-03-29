@@ -1,5 +1,8 @@
+import uuid
+
 class Member:
     def __init__(self, name, role, qualities=None, constraints=None, available_hours=0):
+        self.id = str(uuid.uuid4())   # ← NYTT
         self.name = name
         self.role = role
         self.qualities = qualities or []
@@ -11,6 +14,7 @@ class Member:
 
     def to_dict(self):
         return {
+            "id": self.id,   # ← NYTT
             "name": self.name,
             "role": self.role,
             "qualities": self.qualities,
