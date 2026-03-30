@@ -17,7 +17,7 @@ class Project:
 
     def add_task(self, task):
         self.tasks.append(task)
-        # Keep tasks sorted by priority (highest first)
+        # Holder tasks sortet etter prioritet (høyest først) for enklere visning og planlegging
         self.tasks.sort(key=lambda t: t.priority, reverse=True)
 
 
